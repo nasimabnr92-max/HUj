@@ -1,50 +1,9 @@
 -- =========================================================
--- 0. ПРОВЕРКА ЭКСПОИТА И РЕГИОНА (БЛОКИРОВКА XENO, КАЗАХСТАНА И КНДР)
+-- 1. ЗАГРУЗКА МЕНЮ RAYFIELD (С ПРОВЕРКОЙ И ЗЕРКАЛАМИ)
 -- =========================================================
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local LocalizationService = game:GetService("LocalizationService")
-local HttpService = game:GetService("HttpService")
 
--- Проверка на Xeno
-local execName = ""
-if identifyexecutor then
-    execName = tostring(identifyexecutor())
-elseif getexecutorname then
-    execName = tostring(getexecutorname())
-end
-
-if string.find(string.lower(execName), "xeno") then
-    return -- Тихое завершение без запуска меню
-end
-
--- Проверка региона (KZ = Казахстан, KP = КНДР)
-local isBlockedRegion = false
-
-pcall(function()
-    local country = LocalizationService:GetCountryRegionForPlayerAsync(LocalPlayer)
-    if country == "KZ" or country == "KP" then
-        isBlockedRegion = true
-    end
-end)
-
-if not isBlockedRegion then
-    pcall(function()
-        local response = game:HttpGet("http://ip-api.com/json/")
-        local data = HttpService:JSONDecode(response)
-        if data and (data.countryCode == "KZ" or data.countryCode == "KP") then
-            isBlockedRegion = true
-        end
-    end)
-end
-
-if isBlockedRegion then
-    return -- Тихое завершение без запуска меню
-end
-
--- =========================================================
--- 1. ЗАГРУЗКА МЕНЮ RAYFIELD
--- =========================================================
 local Rayfield
 local urls = {
     'https://sirius.menu/rayfield',
